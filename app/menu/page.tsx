@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useMemo } from "react";
+import { Suspense, useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { PIZZAS } from "@/lib/data";
 import { useCart } from "@/lib/cart";
@@ -25,8 +26,25 @@ const SIDES = [
 ];
 
 export default function MenuPage() {
-  const [active, setActive] = useState("all");
+  return (
+    <Suspense fallback={<section className="bg-cream py-20 text-center text-ink-mute">Even laden...</section>}>
+      <MenuInner />
+    </Suspense>
+  );
+}
+
+const VALID_CATS = ["all", "pizza", "fingerfood", "desserts", "drinks"];
+
+function MenuInner() {
+  const sp = useSearchParams();
+  const initial = sp.get("cat");
+  const [active, setActive] = useState(initial && VALID_CATS.includes(initial) ? initial : "all");
   const { add } = useCart();
+
+  useEffect(() => {
+    const cat = sp.get("cat");
+    if (cat && VALID_CATS.includes(cat)) setActive(cat);
+  }, [sp]);
 
   const items = useMemo(() => {
     const allItems = [

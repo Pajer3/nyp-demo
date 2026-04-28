@@ -9,13 +9,13 @@ import { motion } from "motion/react";
 import { DEAL_BANNERS } from "@/lib/data";
 
 const CATEGORIES = [
-  { slug: "deals", label: "Deals", svg: "percent" },
-  { slug: "pizza", label: "Pizza", svg: "pizza", primary: true },
-  { slug: "fingerfood", label: "Fingerfood", svg: "drumstick" },
-  { slug: "desserts", label: "Desserts", svg: "cookie" },
-  { slug: "pasta", label: "Pasta", svg: "bowl" },
-  { slug: "drinks", label: "Drinks", svg: "drink" },
-  { slug: "funny-meal", label: "Funny meal", svg: "gift" },
+  { href: "/acties", label: "Deals", svg: "percent" },
+  { href: "/menu?cat=pizza", label: "Pizza", svg: "pizza", primary: true },
+  { href: "/menu?cat=fingerfood", label: "Fingerfood", svg: "drumstick" },
+  { href: "/menu?cat=desserts", label: "Desserts", svg: "cookie" },
+  { href: "/menu", label: "Pasta", svg: "bowl" },
+  { href: "/menu?cat=drinks", label: "Drinks", svg: "drink" },
+  { href: "/pizzapunten", label: "Funny meal", svg: "gift" },
 ];
 
 function CatIcon({ name }: { name: string }) {
@@ -59,10 +59,10 @@ export default function Hero() {
           <div className="flex gap-2.5 md:gap-3 min-w-max md:flex-wrap md:justify-start">
             {CATEGORIES.map((c) => (
               <Link
-                key={c.slug}
-                href={`/menu#${c.slug}`}
+                key={c.label}
+                href={c.href}
                 data-cat-pill
-                className={`group inline-flex items-center gap-2.5 transition rounded-full pl-1.5 pr-5 py-1.5 border ${
+                className={`group inline-flex items-center gap-2.5 transition rounded-full pl-1.5 pr-5 py-1.5 border active:scale-[0.97] ${
                   c.primary
                     ? "bg-green text-cream border-green hover:bg-green-deep"
                     : "bg-paper text-ink hover:bg-green-mist hover:border-green border-line"
