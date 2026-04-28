@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { motion } from "motion/react";
 import { DEAL_BANNERS } from "@/lib/data";
+import { CatIcon } from "./CatIcon";
 
 const CATEGORIES = [
   { href: "/acties", label: "Deals", svg: "percent" },
@@ -18,34 +18,20 @@ const CATEGORIES = [
   { href: "/pizzapunten", label: "Funny meal", svg: "gift" },
 ];
 
-function CatIcon({ name }: { name: string }) {
-  // Green-stroke line icons matching brand
-  switch (name) {
-    case "percent":
-      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="6.5" cy="6.5" r="2.5" stroke="currentColor" strokeWidth="2" /><circle cx="17.5" cy="17.5" r="2.5" stroke="currentColor" strokeWidth="2" /><path d="M19 5L5 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>;
-    case "pizza":
-      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 019 9l-9 9-9-9a9 9 0 019-9z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /><circle cx="9" cy="10" r="1.2" fill="currentColor" /><circle cx="14" cy="9" r="1.2" fill="currentColor" /><circle cx="11" cy="14" r="1.2" fill="currentColor" /></svg>;
-    case "drumstick":
-      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M16 4a5 5 0 015 5c0 4-5 5-5 5l-1 4-3 1-1-3-3-1 1-3s1-5 5-5a5 5 0 011-3z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>;
-    case "cookie":
-      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 109 9c0-1-3 1-4-2s-4-1-4-3-1-4 2-4-2-1-3 0z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /><circle cx="9" cy="13" r="1" fill="currentColor" /><circle cx="14" cy="15" r="1" fill="currentColor" /><circle cx="13" cy="10" r="1" fill="currentColor" /></svg>;
-    case "bowl":
-      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11h18a8 8 0 01-8 8h-2a8 8 0 01-8-8z" stroke="currentColor" strokeWidth="1.8" /><path d="M7 8c1-2 3-2 4 0M13 8c1-2 3-2 4 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>;
-    case "drink":
-      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 4h12l-1 17H7L6 4z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /><path d="M7 9h10" stroke="currentColor" strokeWidth="1.8" /></svg>;
-    case "gift":
-      return <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>;
-    default: return null;
-  }
-}
-
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
-      gsap.fromTo("[data-cat-pill]", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out", stagger: 0.04, delay: 0.05 });
-      gsap.fromTo("[data-deal-card]", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", stagger: 0.08, delay: 0.25 });
+      // Animate only on the first visit per session — repeat navigations show the page instantly.
+      if (typeof window === "undefined") return;
+      if (sessionStorage.getItem("nyp_hero_seen")) return;
+      sessionStorage.setItem("nyp_hero_seen", "1");
+
+      gsap.from("[data-hero-greet]", { opacity: 0, y: 6, duration: 0.4 });
+      gsap.from("[data-hero-h1]", { opacity: 0, y: 10, duration: 0.5, delay: 0.1 });
+      gsap.from("[data-cat-pill]", { opacity: 0, y: 12, duration: 0.45, ease: "power2.out", stagger: 0.04, delay: 0.05 });
+      gsap.from("[data-deal-card]", { opacity: 0, y: 24, duration: 0.55, ease: "expo.out", stagger: 0.08, delay: 0.25 });
     },
     { scope: ref },
   );
@@ -81,22 +67,12 @@ export default function Hero() {
 
         {/* GREETING */}
         <div className="mt-8 md:mt-10 mb-5 md:mb-6">
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="caps-sm text-green-deep mb-2"
-          >
+          <div data-hero-greet className="caps-sm text-green-deep mb-2">
             Hi pizzalover
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="display-bold text-ink text-[clamp(2.4rem,5vw,4.6rem)] leading-[0.96] tracking-tight"
-          >
+          </div>
+          <h1 data-hero-h1 className="display-bold text-ink text-[clamp(2.4rem,5vw,4.6rem)] leading-[0.96] tracking-tight">
             Craving Pizza?
-          </motion.h1>
+          </h1>
         </div>
 
         {/* DEAL CARDS */}

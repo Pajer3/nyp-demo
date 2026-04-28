@@ -34,15 +34,14 @@ export default function PizzaGrid() {
 
   useGSAP(
     () => {
-      gsap.fromTo(
-        "[data-pizza-card]",
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1, y: 0, duration: 0.5, ease: "power3.out",
-          stagger: 0.04,
-          scrollTrigger: { trigger: ref.current, start: "top 80%" },
-        },
-      );
+      if (typeof window === "undefined") return;
+      if (sessionStorage.getItem("nyp_pizzagrid_seen")) return;
+      sessionStorage.setItem("nyp_pizzagrid_seen", "1");
+      gsap.from("[data-pizza-card]", {
+        opacity: 0, y: 20, duration: 0.5, ease: "power3.out",
+        stagger: 0.04,
+        scrollTrigger: { trigger: ref.current, start: "top 80%" },
+      });
     },
     { scope: ref },
   );

@@ -7,13 +7,14 @@ import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { PIZZAS } from "@/lib/data";
 import { useCart } from "@/lib/cart";
 import { priceToNumber, eur } from "@/lib/format";
+import { CatIcon } from "@/components/CatIcon";
 
 const CATEGORIES = [
-  { slug: "all", label: "Alles" },
-  { slug: "pizza", label: "Pizza" },
-  { slug: "fingerfood", label: "Fingerfood" },
-  { slug: "desserts", label: "Desserts" },
-  { slug: "drinks", label: "Drinks" },
+  { slug: "all", label: "Alles", svg: "all" },
+  { slug: "pizza", label: "Pizza", svg: "pizza" },
+  { slug: "fingerfood", label: "Fingerfood", svg: "drumstick" },
+  { slug: "desserts", label: "Desserts", svg: "cookie" },
+  { slug: "drinks", label: "Drinks", svg: "drink" },
 ];
 
 const SIDES = [
@@ -66,15 +67,15 @@ function MenuInner() {
         </div>
 
         <LayoutGroup id="menu-cats">
-          <div className="flex gap-2 mb-8 overflow-x-auto pb-1 scrollbar-thin">
+          <div className="flex gap-2 mb-8 overflow-x-auto pb-1 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-thin">
             {CATEGORIES.map((c) => {
               const a = active === c.slug;
               return (
                 <button
                   key={c.slug}
                   onClick={() => setActive(c.slug)}
-                  className={`relative caps text-[0.66rem] px-5 py-2.5 rounded-full whitespace-nowrap transition-colors ${
-                    a ? "text-cream" : "text-ink-soft hover:text-ink bg-paper border border-line"
+                  className={`relative inline-flex items-center gap-2 transition rounded-full pl-1.5 pr-5 py-1.5 border whitespace-nowrap shrink-0 active:scale-[0.97] ${
+                    a ? "border-green" : "bg-paper border-line hover:border-green"
                   }`}
                 >
                   {a && (
@@ -84,7 +85,14 @@ function MenuInner() {
                       transition={{ type: "spring", bounce: 0.18, duration: 0.5 }}
                     />
                   )}
-                  <span className="relative z-10">{c.label}</span>
+                  <span className={`relative z-10 w-9 h-9 rounded-full flex items-center justify-center transition ${
+                    a ? "bg-green-deep text-cream" : "bg-green-soft text-green-deep"
+                  }`}>
+                    <CatIcon name={c.svg} />
+                  </span>
+                  <span className={`relative z-10 caps text-[0.66rem] tracking-[0.12em] font-bold ${a ? "text-cream" : "text-ink"}`}>
+                    {c.label}
+                  </span>
                 </button>
               );
             })}
