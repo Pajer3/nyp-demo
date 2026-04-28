@@ -52,22 +52,64 @@ export default function Nav() {
               <span className="hidden sm:block"><Logo size={108} /></span>
               <span className="sm:hidden"><Logo size={84} /></span>
             </Link>
-            <button
-              onClick={() => setStoreOpen(!storeOpen)}
-              className="hidden md:inline-flex items-center gap-3 bg-cream hover:bg-green-mist transition rounded-full pl-2 pr-5 py-2 text-sm border border-line min-w-[270px] group"
-            >
-              <span className="w-9 h-9 rounded-full bg-paper border border-line group-hover:border-green flex items-center justify-center text-ink group-hover:text-green-deep transition">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <circle cx="7" cy="17" r="2" stroke="currentColor" strokeWidth="1.7" />
-                  <circle cx="17" cy="17" r="2" stroke="currentColor" strokeWidth="1.7" />
-                  <path d="M5 17H3a1 1 0 01-1-1v-5l2-5h11l3 4 3 1 1 5v1a1 1 0 01-1 1h-2M7 17h10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            <div className="relative hidden md:block">
+              <button
+                onClick={() => setStoreOpen(!storeOpen)}
+                aria-expanded={storeOpen}
+                className="inline-flex items-center gap-3 bg-cream hover:bg-green-mist transition rounded-full pl-2 pr-5 py-2 text-sm border border-line min-w-[270px] group"
+              >
+                <span className="w-9 h-9 rounded-full bg-paper border border-line group-hover:border-green flex items-center justify-center text-ink group-hover:text-green-deep transition">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <circle cx="7" cy="17" r="2" stroke="currentColor" strokeWidth="1.7" />
+                    <circle cx="17" cy="17" r="2" stroke="currentColor" strokeWidth="1.7" />
+                    <path d="M5 17H3a1 1 0 01-1-1v-5l2-5h11l3 4 3 1 1 5v1a1 1 0 01-1 1h-2M7 17h10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="caps text-[0.66rem] tracking-[0.16em] text-ink-soft flex-1 text-left">
+                  Selecteer een bezorgwinkel
+                </span>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" className={`text-green-deep transition-transform ${storeOpen ? "rotate-180" : ""}`}>
+                  <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.4" />
                 </svg>
-              </span>
-              <span className="caps text-[0.66rem] tracking-[0.16em] text-ink-soft flex-1 text-left">
-                Selecteer een bezorgwinkel
-              </span>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" className="text-green-deep"><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.4" /></svg>
-            </button>
+              </button>
+              <AnimatePresence>
+                {storeOpen && (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setStoreOpen(false)}
+                      className="fixed inset-0 z-30 bg-ink/30"
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                      transition={{ duration: 0.18 }}
+                      className="absolute top-full left-0 mt-2 z-40 bg-paper rounded-3xl border border-line p-5 w-[420px] origin-top lift"
+                    >
+                      <div className="caps-sm text-green-deep mb-3">Bezorgen of afhalen?</div>
+                      <div className="flex gap-2 mb-4">
+                        <button className="flex-1 bg-green text-cream rounded-full py-2.5 caps text-[0.65rem] hover:bg-green-deep transition">Bezorgen</button>
+                        <button className="flex-1 bg-cream text-ink hover:bg-green-mist rounded-full py-2.5 caps text-[0.65rem] border border-line">Afhalen</button>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Vul je postcode + huisnr in"
+                        className="w-full px-4 py-3 rounded-full border border-line outline-none focus:border-green text-ink placeholder:text-ink-mute"
+                      />
+                      <button className="w-full mt-3 bg-green hover:bg-green-deep text-cream rounded-full py-3 caps text-[0.65rem] transition">
+                        Vind mijn winkel →
+                      </button>
+                      <div className="caps-xs text-green-deep mt-3 text-center font-bold">
+                        ✓ Bezorgd binnen ~28 min in jouw buurt
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* RIGHT */}
@@ -266,43 +308,6 @@ export default function Nav() {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {storeOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setStoreOpen(false)}
-              className="fixed inset-0 z-30 bg-ink/30 hidden md:block"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-              className="hidden md:block fixed top-[80px] lg:top-[100px] left-4 lg:left-8 z-40 bg-paper rounded-3xl border border-line p-5 w-[440px] lift"
-            >
-              <div className="caps-sm text-green-deep mb-3">Bezorgen of afhalen?</div>
-              <div className="flex gap-2 mb-4">
-                <button className="flex-1 bg-green text-cream rounded-full py-2.5 caps text-[0.65rem] hover:bg-green-deep transition">Bezorgen</button>
-                <button className="flex-1 bg-cream text-ink hover:bg-green-mist rounded-full py-2.5 caps text-[0.65rem] border border-line">Afhalen</button>
-              </div>
-              <input
-                type="text"
-                placeholder="Vul je postcode + huisnr in"
-                className="w-full px-4 py-3 rounded-full border border-line outline-none focus:border-green text-ink placeholder:text-ink-mute"
-              />
-              <button className="w-full mt-3 bg-green hover:bg-green-deep text-cream rounded-full py-3 caps text-[0.65rem] transition">
-                Vind mijn winkel →
-              </button>
-              <div className="caps-xs text-green-deep mt-3 text-center font-bold">
-                ✓ Bezorgd binnen ~28 min in jouw buurt
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </>
   );
 }

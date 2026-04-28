@@ -55,13 +55,15 @@ function MenuInner() {
     return active === "all" ? allItems : allItems.filter((i) => i.cat === active);
   }, [active]);
 
+  const total = PIZZAS.length + SIDES.length;
+
   return (
-    <section className="bg-cream pt-8 pb-20">
+    <section className="bg-cream pt-8 pb-20 min-h-[calc(100vh-var(--nav-h,72px))]">
       <div className="max-w-[1400px] mx-auto px-4 md:px-8">
         <div className="mb-8">
           <div className="caps-sm text-green-deep mb-2">Het hele menu</div>
           <h1 className="display-bold text-ink text-[clamp(2.4rem,5vw,4.6rem)] leading-[0.96] tracking-tight">
-            {PIZZAS.length + SIDES.length} producten.{" "}
+            {active === "all" ? `${total} producten.` : `${items.length} ${items.length === 1 ? "product" : "producten"}.`}{" "}
             <span className="text-green-deep">Eén tap = in winkelmand.</span>
           </h1>
         </div>
@@ -100,53 +102,88 @@ function MenuInner() {
         </LayoutGroup>
 
         <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4"
-          >
-            {items.map((p) => (
-              <article
-                key={p.slug}
-                id={p.slug}
-                className="group bg-paper rounded-2xl border border-line hover:border-green hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-              >
-                <div className="relative aspect-square bg-green-soft overflow-hidden">
-                  <Image
-                    src={p.image}
-                    alt={p.name}
-                    fill
-                    loading="lazy"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-contain p-3 md:p-4 group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {"tag" in p && typeof p.tag === "string" && (
-                    <span className="absolute top-2 left-2 caps-xs bg-green text-cream px-2 py-1 rounded-full text-[0.55rem] font-bold">
-                      {p.tag}
-                    </span>
-                  )}
-                </div>
-                <div className="p-4">
-                  <h3 className="display text-base md:text-lg leading-tight tracking-tight mb-1 line-clamp-1 text-ink">{p.name}</h3>
-                  <div className="text-ink-mute text-[0.7rem] line-clamp-2 leading-snug mb-3">
-                    {"desc" in p && typeof p.desc === "string" ? p.desc : ""}
+          {items.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="bg-paper border border-line rounded-3xl p-10 md:p-16 text-center"
+            >
+              <div className="w-16 h-16 mx-auto rounded-full bg-green-soft text-green-deep flex items-center justify-center mb-5">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M21 21l-5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </div>
+              <div className="display text-2xl md:text-3xl mb-2">Niks in deze categorie — nog.</div>
+              <p className="text-ink-mute text-sm md:text-base max-w-md mx-auto mb-6">
+                We werken er nog aan. Check ondertussen onze pizza&apos;s of fingerfood — daar zit het hart van de menukaart.
+              </p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                <button
+                  onClick={() => setActive("pizza")}
+                  className="bg-green hover:bg-green-deep text-cream rounded-full px-6 py-3 caps text-[0.62rem] font-bold transition"
+                >
+                  Bekijk pizza&apos;s →
+                </button>
+                <button
+                  onClick={() => setActive("all")}
+                  className="bg-cream border border-line hover:border-green text-ink rounded-full px-6 py-3 caps text-[0.62rem] font-bold transition"
+                >
+                  Toon hele menu
+                </button>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={active}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4"
+            >
+              {items.map((p) => (
+                <article
+                  key={p.slug}
+                  id={p.slug}
+                  className="group bg-paper rounded-2xl border border-line hover:border-green hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                >
+                  <div className="relative aspect-square bg-green-soft overflow-hidden">
+                    <Image
+                      src={p.image}
+                      alt={p.name}
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="object-contain p-3 md:p-4 group-hover:scale-105 transition-transform duration-500"
+                    />
+                    {"tag" in p && typeof p.tag === "string" && (
+                      <span className="absolute top-2 left-2 caps-xs bg-green text-cream px-2 py-1 rounded-full text-[0.55rem] font-bold">
+                        {p.tag}
+                      </span>
+                    )}
                   </div>
-                  <div className="flex items-baseline justify-between gap-2 mb-3">
-                    <span className="mono text-green-deep font-bold text-sm">{eur(p.price)}</span>
+                  <div className="p-4">
+                    <h3 className="display text-base md:text-lg leading-tight tracking-tight mb-1 line-clamp-1 text-ink">{p.name}</h3>
+                    <div className="text-ink-mute text-[0.7rem] line-clamp-2 leading-snug mb-3">
+                      {"desc" in p && typeof p.desc === "string" ? p.desc : ""}
+                    </div>
+                    <div className="flex items-baseline justify-between gap-2 mb-3">
+                      <span className="mono text-green-deep font-bold text-sm">{eur(p.price)}</span>
+                    </div>
+                    <button
+                      onClick={() => add({ id: p.slug, name: p.name, image: p.image, price: p.price })}
+                      className="w-full bg-green hover:bg-green-deep text-cream rounded-full py-2 caps text-[0.6rem] tracking-[0.16em] font-bold transition"
+                    >
+                      + Toevoegen
+                    </button>
                   </div>
-                  <button
-                    onClick={() => add({ id: p.slug, name: p.name, image: p.image, price: p.price })}
-                    className="w-full bg-green hover:bg-green-deep text-cream rounded-full py-2 caps text-[0.6rem] tracking-[0.16em] font-bold transition"
-                  >
-                    + Toevoegen
-                  </button>
-                </div>
-              </article>
-            ))}
-          </motion.div>
+                </article>
+              ))}
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </section>

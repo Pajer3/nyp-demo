@@ -3,10 +3,7 @@ import { Bebas_Neue, Inter, Fraunces, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 import LenisProvider from "@/components/LenisProvider";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
-import StickyOrderBar from "@/components/StickyOrderBar";
-import CartDrawer from "@/components/CartDrawer";
+import SiteChrome from "@/components/SiteChrome";
 import { CartProvider } from "@/lib/cart";
 import { AuthProvider } from "@/lib/auth";
 
@@ -60,11 +57,7 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <LenisProvider>
-              <Nav />
-              <main className="pt-[var(--nav-h,96px)]">{children}</main>
-              <Footer />
-              <StickyOrderBar />
-              <CartDrawer />
+              <SiteChrome>{children}</SiteChrome>
             </LenisProvider>
           </CartProvider>
         </AuthProvider>
